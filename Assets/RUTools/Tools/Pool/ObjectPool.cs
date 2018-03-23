@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using RUT.Tools.Utilities;
+using RUT.Utilities;
 using System.Linq;
 
 namespace RUT.Tools.Pool

@@ -1,7 +1,7 @@
 ﻿namespace RUT.Tools.Event.Observer
 {
     /// <summary>
-    ///	Observable class.
+    /// Observable class.
     /// </summary>
     public class Observable<T> : IObservable<T>
     {
@@ -28,7 +28,7 @@
     }
 
     /// <summary>
-    ///	Observable class.
+    /// Observable class.
     /// </summary>
     public class Observable : IObservable
     {

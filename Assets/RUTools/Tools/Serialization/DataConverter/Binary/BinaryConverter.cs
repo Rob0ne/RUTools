@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System;
-using RUT.Tools.Utilities;
+using RUT.Utilities;
 
 namespace RUT.Tools.Serialization
 {

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using RUT.Tools.Utilities;
+using RUT.Utilities;
 using System;
 
 namespace RUT.Examples.Utilities

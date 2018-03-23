@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using RUT.Tools.Utilities;
+using RUT.Utilities;
 
 namespace RUT.Tools.Pool
 {
     /// <summary>
-    ///	Poolabe object base class.
+    /// Poolabe object base class.
     /// </summary>
     public abstract class PoolableMBObject : MonoBehaviour, IPoolable
 {

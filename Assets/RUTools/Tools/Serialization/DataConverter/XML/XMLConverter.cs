@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 using System.Text;
 using System.IO;
 using System;
-using RUT.Tools.Utilities;
+using RUT.Utilities;
 
 namespace RUT.Tools.Serialization
 {

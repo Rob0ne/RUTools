@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace RUT.Tools.Utilities
+namespace RUT.Utilities
 {
     public class UGUI
     {

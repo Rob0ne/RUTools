@@ -1,4 +1,4 @@
-﻿namespace RUT.Tools.Utilities.Debug
+﻿namespace RUT.Utilities.Debug
 {
     /// <summary>
     /// UDebug utilities.

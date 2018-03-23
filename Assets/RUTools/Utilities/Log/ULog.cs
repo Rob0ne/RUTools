@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace RUT.Tools.Utilities
+﻿namespace RUT.Utilities
 {
     /// <summary>
     /// Log Utilities.

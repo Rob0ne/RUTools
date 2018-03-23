@@ -4,7 +4,7 @@ using System;
 namespace RUT.Tools.Pool
 {
     /// <summary>
-    ///	Poolable component. Only used as a component to avoid inheritance.
+    /// Poolable component. Only used as a component to avoid inheritance.
     /// </summary>
     public sealed class PoolableComponent : PoolableMBObject
     {

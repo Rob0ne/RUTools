@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RUT.Tools.Utilities.Debug
+namespace RUT.Utilities.Debug
 {
     public class FPSDisplay : MonoBehaviour
     {

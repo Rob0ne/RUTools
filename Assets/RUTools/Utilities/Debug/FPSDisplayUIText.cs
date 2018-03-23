@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace RUT.Tools.Utilities.Debug
+namespace RUT.Utilities.Debug
 {
     [RequireComponent(typeof(Text))]
     public class FPSDisplayUIText : MonoBehaviour
