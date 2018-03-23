@@ -1,9 +1,11 @@
 Bin/
 Builds/
 Build/
-Assets/_Temp/
-Assets/ProCore/
 unity.userprefs
+Assets/_Temp/
+Assets/_Temp.meta
+Assets/ProCore/
+Assets/ProCore.meta
 
 # =============== #
 # Unity generated #
