@@ -1,0 +1,50 @@
+Bin/
+Builds/
+Build/
+Assets/_Temp/
+Assets/ProCore/
+unity.userprefs
+
+# =============== #
+# Unity generated #
+# =============== #
+UnityPackageManager/
+Temp/
+Obj/
+UnityGenerated/
+Library/
+Assets/AssetStoreTools*
+Assets/Temp.meta
+ProjectSettings/ProjectVersion.txt
+output_log.txt
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+.vs
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Assets/images/video_presentation/Gameplay-MIA_high.mov
+Assets/images/video_presentation/Gameplay-MIA_high.mov.meta
+Assets/SteamingAssets/*
+sh.exe.stackdump
+Assets/Xml/achievements.xml
