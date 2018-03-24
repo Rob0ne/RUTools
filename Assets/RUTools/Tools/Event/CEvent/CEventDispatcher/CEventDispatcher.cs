@@ -3,7 +3,7 @@
     /// <summary>
     /// CEventDispatcher base class.
     /// </summary>
-    public abstract class EventDispatcher : ICEventDispatcher
+    public abstract class CEventDispatcher : ICEventDispatcher
     {
         #region Private properties
         private CEDComponent _ced = new CEDComponent();
@@ -26,9 +26,9 @@
         {
             _ced.RemoveAllCEventListeners();
         }
-        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, ICEventArgs args)
+        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, object arg)
         {
-            _ced.DispatchCEvent (dispatcher, type, args);
+            _ced.DispatchCEvent (dispatcher, type, arg);
         }
         public bool HasCEventListener(string type)
         {

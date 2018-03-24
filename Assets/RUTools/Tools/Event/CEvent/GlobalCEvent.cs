@@ -9,14 +9,13 @@
     // GlobalCEvent.Instance.RemoveCEventListener(GlobalCEvent.ID_OnEventTriggered);
     //
     // GlobalCEvent.Instance.DispatchCEvent(new CEvent(GlobalCEvent.ID_OnEventTriggered, new ExampleArgs()));
-    // //ExampleArgs class must implement ICEventArgs.
 
 
 
     /// <summary>
     /// Global custom event handler.
     /// </summary>
-    public sealed partial class GlobalCEvent : EventDispatcher
+    public sealed partial class GlobalCEvent : CEventDispatcher
     {
         //Example:
 
@@ -26,7 +25,7 @@
 
 
     // Singleton part.
-    public sealed partial class GlobalCEvent : EventDispatcher
+    public sealed partial class GlobalCEvent : CEventDispatcher
     {
         #region Public properties
         public static GlobalCEvent Instance

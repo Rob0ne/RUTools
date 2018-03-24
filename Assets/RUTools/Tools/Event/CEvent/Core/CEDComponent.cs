@@ -85,7 +85,7 @@ namespace RUT.Tools.Event.CEvent
         /// <summary>
         /// Dispatches an event. If there is no callbacks associated to the event, nothing happens.
         /// </summary>
-        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, ICEventArgs args)
+        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, object arg)
         {
             HashSet<CEventCallbackData> callbackSet;
 
@@ -93,7 +93,7 @@ namespace RUT.Tools.Event.CEvent
             {
                 foreach (CEventCallbackData data in callbackSet)
                 {
-                    data.callback.Invoke (dispatcher, args);
+                    data.callback.Invoke (dispatcher, arg);
 
                     if (data.calledOnce)
                     {

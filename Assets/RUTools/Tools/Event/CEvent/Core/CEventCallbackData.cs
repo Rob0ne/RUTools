@@ -2,7 +2,7 @@
 
 namespace RUT.Tools.Event.CEvent
 {
-    public delegate void CEventCallback(ICEventDispatcher dispatcher, ICEventArgs args);
+    public delegate void CEventCallback(ICEventDispatcher dispatcher, object arg);
 
     /// <summary>
     /// Struct containing all data needed for callback processing.

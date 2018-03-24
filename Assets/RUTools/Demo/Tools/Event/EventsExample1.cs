@@ -9,7 +9,7 @@ namespace RUT.Examples.Event
     /// <summary>
     /// EventsExample1 class.
     /// </summary>
-    public class EventsExample1 : MBEventDispatcher
+    public class EventsExample1 : MBCEventDispatcher
     {
         #region Public properties
         public Text outputText;
@@ -54,7 +54,7 @@ namespace RUT.Examples.Event
             //
             //If you don't like the idea of having a singleton and still want an object to act
             //like a global event dispatcher. You can declare your own non-singleton class that
-            //inherit from EventDispatcher and get its reference by injection whenever needed.
+            //inherit from CEventDispatcher and get its reference by injection whenever needed.
             GlobalCEvent.Instance.AddCEventListener(GlobalCEvent.ID_OnEventTriggered, OnEventTriggeredCE);
 
             //Local events need to have the object's reference to add, remove or dispatch.
@@ -75,9 +75,9 @@ namespace RUT.Examples.Event
 
         #region Private methods
         //CEvent function
-        private void OnEventTriggeredCE(ICEventDispatcher dispatcher, ICEventArgs args)
+        private void OnEventTriggeredCE(ICEventDispatcher dispatcher, object arg)
         {
-            CEventArgExample argExample = args as CEventArgExample;
+            CEventArgExample argExample = arg as CEventArgExample;
             if (argExample == null)
                 return;
 
@@ -108,8 +108,7 @@ namespace RUT.Examples.Event
         #endregion
 
         #region SubType
-        //You can create your own argument classes for CEvents by implementing the ICEventArgs interface.
-        public class CEventArgExample : ICEventArgs
+        public class CEventArgExample
         {
             public Color color;
             public string text;

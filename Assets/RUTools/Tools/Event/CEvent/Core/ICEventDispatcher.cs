@@ -9,7 +9,7 @@
         void RemoveCEventListener(string type);
         void RemoveCEventListener(string type, CEventCallback callback);
         void RemoveAllCEventListeners();
-        void DispatchCEvent(ICEventDispatcher dispatcher, string type, ICEventArgs args);
+        void DispatchCEvent(ICEventDispatcher dispatcher, string type, object arg);
         bool HasCEventListener(string type);
     }
 }

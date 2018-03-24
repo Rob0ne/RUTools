@@ -5,7 +5,7 @@ namespace RUT.Tools.Event.CEvent
     /// <summary>
     /// MBCEventDispatcher base class inherited from MonoBehaviour.
     /// </summary>
-    public abstract class MBEventDispatcher : MonoBehaviour, ICEventDispatcher
+    public abstract class MBCEventDispatcher : MonoBehaviour, ICEventDispatcher
     {
         #region Private properties
         private CEDComponent _ced = new CEDComponent();
@@ -28,9 +28,9 @@ namespace RUT.Tools.Event.CEvent
         {
             _ced.RemoveAllCEventListeners();
         }
-        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, ICEventArgs args)
+        public void DispatchCEvent(ICEventDispatcher dispatcher, string type, object arg)
         {
-            _ced.DispatchCEvent (dispatcher, type, args);
+            _ced.DispatchCEvent (dispatcher, type, arg);
         }
         public bool HasCEventListener(string type)
         {
