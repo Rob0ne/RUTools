@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Security.Cryptography;
 using System;
+using System.Threading;
 using RUT.Utilities;
 
 namespace RUT.Tools.Serialization
@@ -34,6 +35,23 @@ namespace RUT.Tools.Serialization
         #endregion
 
         #region API
+        /// <summary>
+        /// Serializes "data" into a file at given destination "filePath".
+        /// </summary>
+        public Thread SerializeDataAsync<T>(T data, string filePath, Action onEnd, bool encrypted = false)
+        {
+            Thread thread = new Thread(() =>
+            {
+                SerializeData<T>(data, filePath, encrypted);
+
+                if (onEnd != null)
+                    onEnd();
+            });
+
+            thread.Start();
+            return thread;
+        }
+
         /// <summary>
         /// Serializes "data" into a file at given destination "filePath".
         /// </summary>
@@ -105,6 +123,23 @@ namespace RUT.Tools.Serialization
             }
 
             File.Move(savingFilePath, filePath);
+        }
+
+        /// <summary>
+        /// Serializes "data" into a file at given destination "filePath".
+        /// </summary>
+        public Thread DeserializeDataAsync<T>(string filePath, Action<T> onEnd)
+        {
+            Thread thread = new Thread(() =>
+            {
+                T data = DeserializeData<T>(filePath);
+
+                if (onEnd != null)
+                    onEnd(data);
+            });
+
+            thread.Start();
+            return thread;
         }
 
         /// <summary>
