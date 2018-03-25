@@ -16,14 +16,36 @@ namespace RUT.Tools.Collision.Collector
             get
             {
                 //Update pending data only when asked.
-                UpdatePending();
-                CleanLists();
+                if (_checkRequired)
+                {
+                    UpdatePending();
+                    CleanLists();
+
+                    _checkRequired = false;
+                }
                 return _collectionSet.Keys.ToArray();
+            }
+        }
+
+        public int CollectedCount
+        {
+            get
+            {
+                if (_checkRequired)
+                {
+                    UpdatePending();
+                    CleanLists();
+
+                    _checkRequired = false;
+                }
+                return _collectionSet.Count;
             }
         }
         #endregion
 
         #region Private properties
+        private bool _checkRequired = true;
+
         //Contains final targets as key and a collection of all parts pointing toward it as value.
         private Dictionary<ITargetable, HashSet<ITargetable>> _collectionSet = new Dictionary<ITargetable, HashSet<ITargetable>>();
         //Contains all volatile parts and their own gameobject as value.

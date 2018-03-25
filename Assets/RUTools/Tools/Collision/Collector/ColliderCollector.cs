@@ -15,14 +15,36 @@ namespace RUT.Tools.Collision.Collector
             get
             {
                 //Update pending data only when asked.
-                UpdatePending();
-                CleanLists();
+                if (_checkRequired)
+                {
+                    UpdatePending();
+                    CleanLists();
+
+                    _checkRequired = false;
+                }
                 return _collectionSet.ToArray();
+            }
+        }
+
+        public int CollectedCount
+        {
+            get
+            {
+                if (_checkRequired)
+                {
+                    UpdatePending();
+                    CleanLists();
+
+                    _checkRequired = false;
+                }
+                return _collectionSet.Count;
             }
         }
         #endregion
 
         #region Private properties
+        private bool _checkRequired = true;
+
         //Contains every collected colliders.
         private HashSet<Collider> _collectionSet = new HashSet<Collider>();
         //Contains every collected colliders marked as volatile.
