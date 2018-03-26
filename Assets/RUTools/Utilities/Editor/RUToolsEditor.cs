@@ -11,7 +11,7 @@ namespace RUT.Editor
     /// <summary>
     /// RUTools editor helper class.
     /// </summary>
-    public class RUToolsEditor<T> : UnityEditor.Editor
+    public abstract class RUToolsEditor : UnityEditor.Editor
     {
         #region Private properties
         protected static readonly string _scriptFieldName = "m_Script";
@@ -38,10 +38,8 @@ namespace RUT.Editor
         private static readonly String _idMainSettingsExpanded = "MainSettingsExpanded";
         private static readonly String _idDerivedSettingsExpanded = "DerivedSettingsExpanded";
 
-        private Type _baseType = typeof(T);
-        private bool _showDerivedInspector = false;
-
-        private string[] _excludedProperties;
+        protected bool _showDerivedInspector = false;
+        protected string[] _excludedProperties;
 
         private bool _mainSettingsExpanded = false;
         private bool _derivedSettingsExpanded = false;
@@ -51,6 +49,20 @@ namespace RUT.Editor
         #endregion
 
         #region API
+        public virtual void SaveStates()
+        {
+            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
+            preferences.SetEditorState(target.GetType(), _idMainSettingsExpanded, Convert.ToInt16(_mainSettingsExpanded));
+            preferences.SetEditorState(target.GetType(), _idDerivedSettingsExpanded, Convert.ToInt16(_derivedSettingsExpanded));
+        }
+
+        public virtual void LoadStates()
+        {
+            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
+            _mainSettingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idMainSettingsExpanded));
+            _derivedSettingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idDerivedSettingsExpanded));
+        }
+
         public virtual void DrawMainSettings()
         {
         }
@@ -67,7 +79,7 @@ namespace RUT.Editor
             //Get styles.
             RUToolsSkin currentSkin = RUToolsPreferences.GetSkin();
 
-            if(_logoStyle == null)
+            if (_logoStyle == null)
                 _logoStyle = currentSkin.GetStyle(_logoStyleName);
             if (_logoTextStyle == null)
                 _logoTextStyle = currentSkin.GetStyle(_logoTextStyleName);
@@ -86,38 +98,11 @@ namespace RUT.Editor
             if (_fieldToggleStyle == null)
                 _fieldToggleStyle = currentSkin.GetStyle(_fieldToggleStyleName);
 
-            //Get all base properties.
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-            FieldInfo[] fields = target.GetType().GetFields(flags);
-
-            IEnumerable<FieldInfo> baseFields = fields.Where(x => x.DeclaringType == _baseType);
-            int baseFieldsCount = baseFields.Count();
-
-            _excludedProperties = new string[baseFieldsCount + 1];
-
-            int i = 0;
-            foreach (FieldInfo f in baseFields)
-            {
-                _excludedProperties[i] = f.Name;
-                i++;
-            }
-            _excludedProperties[i] = "m_Script";
-
-            if (fields.Length > baseFieldsCount)
-            {
-                _showDerivedInspector = true;
-            }
-
-            //Get States
-            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
-            _mainSettingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idMainSettingsExpanded));
-            _derivedSettingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idDerivedSettingsExpanded));
+            LoadStates();
         }
         public virtual void OnDisable()
         {
-            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
-            preferences.SetEditorState(target.GetType(), _idMainSettingsExpanded, Convert.ToInt16(_mainSettingsExpanded));
-            preferences.SetEditorState(target.GetType(), _idDerivedSettingsExpanded, Convert.ToInt16(_derivedSettingsExpanded));
+            SaveStates();
         }
 
         public override void OnInspectorGUI()
@@ -217,11 +202,11 @@ namespace RUT.Editor
 
             if (GUI.Button(r, "", _fieldButtonStyle))
             {
-                if(onButtonPressed != null)
+                if (onButtonPressed != null)
                     onButtonPressed.Invoke();
             }
 
-            if(fieldToDraw != null)
+            if (fieldToDraw != null)
                 fieldToDraw.Invoke();
 
             EndtHorizontalButtonedLayout();
@@ -235,11 +220,11 @@ namespace RUT.Editor
 
             if (value != previousToggleValue)
             {
-                if(onToggle != null)
+                if (onToggle != null)
                     onToggle.Invoke(value);
             }
 
-            if(fieldToDraw != null)
+            if (fieldToDraw != null)
                 fieldToDraw.Invoke();
 
             EndtHorizontalButtonedLayout();
@@ -254,12 +239,12 @@ namespace RUT.Editor
 
             if (!value)
             {
-                if(onUntoggled != null)
+                if (onUntoggled != null)
                     onUntoggled.Invoke();
             }
             else
             {
-                if(onToggled != null)
+                if (onToggled != null)
                     onToggled.Invoke();
             }
 
@@ -309,6 +294,45 @@ namespace RUT.Editor
         {
             EditorGUI.indentLevel -= 1;
             EditorGUILayout.EndHorizontal();
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// RUTools editor helper class.
+    /// </summary>
+    public abstract class RUToolsEditor<T> : RUToolsEditor
+    {
+        #region Private properties
+        private Type _baseType = typeof(T);
+        #endregion
+
+        #region Unity
+        public override void OnEnable()
+        {
+            base.OnEnable();
+
+            //Get all base properties.
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            FieldInfo[] fields = target.GetType().GetFields(flags);
+
+            IEnumerable<FieldInfo> baseFields = fields.Where(x => x.DeclaringType == _baseType);
+            int baseFieldsCount = baseFields.Count();
+
+            _excludedProperties = new string[baseFieldsCount + 1];
+
+            int i = 0;
+            foreach (FieldInfo f in baseFields)
+            {
+                _excludedProperties[i] = f.Name;
+                i++;
+            }
+            _excludedProperties[i] = "m_Script";
+
+            if (fields.Length > baseFieldsCount)
+            {
+                _showDerivedInspector = true;
+            }
         }
         #endregion
     }

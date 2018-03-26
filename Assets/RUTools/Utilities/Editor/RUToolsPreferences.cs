@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Text;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
-using System.IO;
 #endif
 
 namespace RUT.Editor
@@ -15,22 +16,29 @@ namespace RUT.Editor
     public class RUToolsPreferences : ScriptableObject
     {
         #region Public properties
-        public List<EditorSettings> editors = new List<EditorSettings>();
         #endregion
 
         #region Private properties
+        private static string _rutDataFolder = "Library/RUTData/";
         private static string _assetFolder = "Assets/";
         private static string _resourcesFolder = "Resources/";
         private static string _editorFolder = "Editor/";
 
         private static string _skinName = "RUTSkin";
         private static string _preferencesName = "RUTPreferences";
+
         private static string _assetExt = ".asset";
+        private static string _fileExt = ".json";
+
+        private static string _encoding = "UTF-8";
 
         private static RUToolsPreferences _preferencesCached = null;
         private static RUToolsSkin _skinCached = null;
 
+        private PreferenceData _preferenceData = null;
         private Dictionary<string, Dictionary<string, State>> _editorStateSet = null;
+
+        private bool _isDirty = false;
         #endregion
 
         #region API
@@ -118,7 +126,11 @@ namespace RUT.Editor
                 State s;
                 if (stateSet.TryGetValue(id, out s))
                 {
-                    s.value = value;
+                    if (s.value != value)
+                    {
+                        s.value = value;
+                        _isDirty = true;
+                    }
                 }
                 else
                     quickSet = false;
@@ -132,49 +144,82 @@ namespace RUT.Editor
                 //If stateSet was found, meaning that the editor's data is already there, just add the new state.
                 if(stateSet != null)
                 {
-                    for (int i = 0; i < editors.Count; ++i)
+                    for (int i = 0; i < _preferenceData.editors.Count; ++i)
                     {
-                        if (editors[i] != null && editors[i].Editor == editorName)
+                        if (_preferenceData.editors[i] != null && _preferenceData.editors[i].Editor == editorName)
                         {
-                            editors[i].states.Add(stateData);
+                            _preferenceData.editors[i].states.Add(stateData);
 
                             //Update dictionary.
                             stateSet[id] = stateData;
+                            _isDirty = true;
                             return;
                         }
                     }
                 }
                 else
                 {
+                    //Update serialized data.
                     EditorSettings settings = new EditorSettings(editorName);
                     settings.states.Add(stateData);
-                    editors.Add(settings);
+                    _preferenceData.editors.Add(settings);
 
                     //Update dictionary.
                     _editorStateSet[editorName] = new Dictionary<string, State>();
                     _editorStateSet[editorName][id] = stateData;
+
+                    _isDirty = true;
                 }
             }
         }
         #endregion
 
         #region Unity
+        private void OnDisable()
+        {
+            //Must call explicitly SaveStates on active editors because it is not guaranteed that
+            //this OnDisable will be called last.
+            RUToolsEditor[] editors = (RUToolsEditor[])Resources.FindObjectsOfTypeAll(typeof(RUToolsEditor));
+            for(int i = 0; i < editors.Length; ++i)
+            {
+                editors[i].SaveStates();
+            }
+
+            if (_isDirty)
+            {
+                SaveFile(_preferenceData, _preferencesName);
+                _isDirty = false;
+            }
+        }
         #endregion
 
         #region Private methods
+        private void ReloadPreferenceData()
+        {
+            _preferenceData = LoadFile<PreferenceData>(_preferencesName);
+            if (_preferenceData == null)
+            {
+                _preferenceData = new PreferenceData();
+
+                SaveFile(_preferenceData, _preferencesName);
+            }
+        }
+
         private void RebuildEditorSet()
         {
+            ReloadPreferenceData();
+
             _editorStateSet = new Dictionary<string, Dictionary<string, State>>();
 
-            for (int i = 0; i < editors.Count; ++i)
+            for (int i = 0; i < _preferenceData.editors.Count; ++i)
             {
-                if(editors[i] != null)
+                if(_preferenceData.editors[i] != null)
                 {
-                    string editorName = editors[i].Editor;
+                    string editorName = _preferenceData.editors[i].Editor;
 
                     _editorStateSet[editorName] = new Dictionary<string, State>();
 
-                    List<State> stateList = editors[i].states;
+                    List<State> stateList = _preferenceData.editors[i].states;
 
                     for (int j = 0; j < stateList.Count; ++j)
                     {
@@ -203,9 +248,70 @@ namespace RUT.Editor
 
             return asset;
         }
+
+        private static void SaveFile<T>(T data, string fileName)
+        {
+            int assetsIndex = Application.dataPath.LastIndexOf('/');
+            string projectPath = Application.dataPath.Remove(assetsIndex);
+
+            string folderPath = projectPath + "/" + _rutDataFolder;
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            string content = JsonUtility.ToJson(data, true);
+
+            Encoding encoding = Encoding.GetEncoding(_encoding);
+
+            FileStream fileStream = new FileStream(_rutDataFolder + fileName + _fileExt, FileMode.Create);
+            StreamWriter fileWriter = new StreamWriter(fileStream, encoding);
+
+            fileWriter.WriteLine(content);
+
+            fileWriter.Close();
+            fileStream.Close();
+        }
+
+        private static T LoadFile<T>(string fileName)
+        {
+            int assetsIndex = Application.dataPath.LastIndexOf('/');
+            string projectPath = Application.dataPath.Remove(assetsIndex);
+
+            string filePath = projectPath + "/" + _rutDataFolder + fileName + _fileExt;
+
+            if (!File.Exists(filePath))
+                return default(T);
+
+            Encoding encoding = Encoding.GetEncoding(_encoding);
+
+            T data;
+            string content;
+            using (StreamReader fileReader = new StreamReader(filePath, encoding))
+            {
+                content = fileReader.ReadToEnd();
+
+                try
+                {
+                    data = JsonUtility.FromJson<T>(content);
+                }
+                catch (Exception)
+                {
+                    data = default(T);
+                }
+            }
+
+            return data;
+        }
         #endregion
 
         #region SubType
+        [Serializable]
+        public class PreferenceData
+        {
+            public List<EditorSettings> editors = new List<EditorSettings>();
+        }
+
         [Serializable]
         public class EditorSettings
         {

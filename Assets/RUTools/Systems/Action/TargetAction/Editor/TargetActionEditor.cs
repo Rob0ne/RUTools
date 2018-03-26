@@ -48,20 +48,25 @@ namespace RUT.Systems.Action
             _autoDisableProperty = _settingsProperty.FindPropertyRelative("autoDisable");
             _repeatTypeProperty = _settingsProperty.FindPropertyRelative("repeatType");
 
-            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
-            _settingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idSettingsExpanded));
-
             _lifeTimeActive = _lifetimeProperty.floatValue >= 0 ? true : false;
             _affectedLimitActive = _affectedLimitProperty.intValue >= 0 ? true : false;
             _repeatLimitActive = _repeatLimitProperty.intValue >= 0 ? true : false;
         }
 
-        public override void OnDisable()
+        public override void SaveStates()
         {
-            base.OnDisable();
+            base.SaveStates();
 
             RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
             preferences.SetEditorState(target.GetType(), _idSettingsExpanded, Convert.ToInt16(_settingsExpanded));
+        }
+
+        public override void LoadStates()
+        {
+            base.LoadStates();
+
+            RUToolsPreferences preferences = RUToolsPreferences.GetPreferences();
+            _settingsExpanded = Convert.ToBoolean(preferences.GetEditorState(target.GetType(), _idSettingsExpanded));
         }
 
         public override void DrawMainSettings()
