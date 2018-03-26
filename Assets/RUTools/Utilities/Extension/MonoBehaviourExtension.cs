@@ -14,14 +14,30 @@ public static class MonoBehaviourExtension
     /// </summary>
     public static Coroutine DelayedAction(this MonoBehaviour mb, Action action, float time)
     {
-        return mb.StartCoroutine (DelayedActionProcess(action, time, true));
+        if(time <= 0)
+        {
+            if (action != null)
+                action();
+
+            return null;
+        }
+        else
+            return mb.StartCoroutine (DelayedActionProcess(action, time, true));
     }
     /// <summary>
     /// Delays an "action" by unscaled "time" using coroutines.
     /// </summary>
     public static Coroutine DelayedActionUnscaled(this MonoBehaviour mb, Action action, float time)
     {
-        return mb.StartCoroutine(DelayedActionProcess(action, time, false));
+        if (time <= 0)
+        {
+            if (action != null)
+                action();
+
+            return null;
+        }
+        else
+            return mb.StartCoroutine(DelayedActionProcess(action, time, false));
     }
 
     private static IEnumerator DelayedActionProcess(Action action, float time, bool scaled)
