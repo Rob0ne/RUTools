@@ -38,12 +38,12 @@ namespace RUT.Examples.TargetAction
         #endregion
 
         #region Private methods
-        protected override void OnStartCallback(List<ITargetable> targets)
+        protected override void OnStart(List<ITargetable> targets)
         {
             _lastTargetCount = targets.Count;
             loopFX.Play();
         }
-        protected override void OnLoopCallback(List<ITargetable> targets)
+        protected override void OnLoop(List<ITargetable> targets)
         {
             _lastTargetCount = targets.Count;
             for (int i = 0; i < targets.Count; ++i)
@@ -56,7 +56,7 @@ namespace RUT.Examples.TargetAction
                 }
             }
         }
-        protected override void OnEndCallback(List<ITargetable> targets)
+        protected override void OnEnd(List<ITargetable> targets)
         {
             _lastTargetCount = targets.Count;
             for (int i = 0; i < targets.Count; ++i)

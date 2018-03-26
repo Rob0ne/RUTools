@@ -15,10 +15,10 @@ namespace RUT.Systems.Action
         public Settings settings = new Settings(0,1,-1,-1,-1);
         public TargetCollector collector;
 
-        public delegate void CallbackAction (List<ITargetable> targets);
-        public event CallbackAction OnStart;
-        public event CallbackAction OnLoop;
-        public event CallbackAction OnEnd;
+        public delegate void TargetCallback (List<ITargetable> targets);
+        public event TargetCallback OnStartEvent;
+        public event TargetCallback OnLoopEvent;
+        public event TargetCallback OnEndEvent;
         #endregion
 
         #region Private properties
@@ -67,9 +67,9 @@ namespace RUT.Systems.Action
         #endregion
 
         #region Private methods
-        protected virtual void OnStartCallback(List<ITargetable> targets) { }
-        protected virtual void OnLoopCallback(List<ITargetable> targets) { }
-        protected virtual void OnEndCallback(List<ITargetable> targets) { }
+        protected virtual void OnStart(List<ITargetable> targets) { }
+        protected virtual void OnLoop(List<ITargetable> targets) { }
+        protected virtual void OnEnd(List<ITargetable> targets) { }
 
         /// <summary>
         /// Handle the data reset and on end events.
@@ -84,10 +84,10 @@ namespace RUT.Systems.Action
                 {
                     UpdateCurrentTargets(false);
 
-                    if(OnEnd != null)
-                        OnEnd(_currentTargets);
+                    if(OnEndEvent != null)
+                        OnEndEvent(_currentTargets);
 
-                    OnEndCallback(_currentTargets);
+                    OnEnd(_currentTargets);
                 }
             }
 
@@ -111,10 +111,10 @@ namespace RUT.Systems.Action
 
             UpdateCurrentTargets(false);
 
-            if(OnStart != null)
-                OnStart(_currentTargets);
+            if(OnStartEvent != null)
+                OnStartEvent(_currentTargets);
 
-            OnStartCallback(_currentTargets);
+            OnStart(_currentTargets);
 
             float lastUpdateTime = Time.time;
             float lifeTime = settings.lifetime;
@@ -175,10 +175,10 @@ namespace RUT.Systems.Action
                 {
                     if (callbackActive)
                     {
-                        if (OnLoop != null)
-                            OnLoop(_currentTargets);
+                        if (OnLoopEvent != null)
+                            OnLoopEvent(_currentTargets);
 
-                        OnLoopCallback(_currentTargets);
+                        OnLoop(_currentTargets);
                     }
 
                     //If repeat limit is not infinite check count.
