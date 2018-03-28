@@ -39,7 +39,8 @@ namespace RUT.Editor
         private static readonly String _idDerivedSettingsExpanded = "DerivedSettingsExpanded";
 
         protected bool _showDerivedInspector = false;
-        protected string[] _excludedProperties;
+        protected string[] _additionalExcludedProperties;
+        protected string[] _mainExcludedProperties;
 
         private bool _mainSettingsExpanded = false;
         private bool _derivedSettingsExpanded = false;
@@ -65,11 +66,12 @@ namespace RUT.Editor
 
         public virtual void DrawMainSettings()
         {
+            DrawPropertiesExcluding(serializedObject, _mainExcludedProperties);
         }
 
         public virtual void DrawAdditionalSettings()
         {
-            DrawPropertiesExcluding(serializedObject, _excludedProperties);
+            DrawPropertiesExcluding(serializedObject, _additionalExcludedProperties);
         }
         #endregion
 
@@ -312,24 +314,61 @@ namespace RUT.Editor
         {
             base.OnEnable();
 
-            //Get all base properties.
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-            FieldInfo[] fields = target.GetType().GetFields(flags);
+            BindingFlags flags = BindingFlags.DeclaredOnly | BindingFlags.NonPublic |
+                BindingFlags.Public | BindingFlags.Instance;
+            List<FieldInfo> baseFields = new List<FieldInfo>();
+            List<FieldInfo> childFields = new List<FieldInfo>();
 
-            IEnumerable<FieldInfo> baseFields = fields.Where(x => x.DeclaringType == _baseType);
-            int baseFieldsCount = baseFields.Count();
+            //Parse through every visible fields.
+            SerializedProperty propertyIterator = serializedObject.GetIterator();
+            if(propertyIterator.NextVisible(true))
+            {
+                do
+                {
+                    Type t = target.GetType();
+                    while (t != null)
+                    {
+                        FieldInfo fieldInfo = t.GetField(propertyIterator.name, flags);
 
-            _excludedProperties = new string[baseFieldsCount + 1];
+                        if (fieldInfo != null)
+                        {
+                            if (fieldInfo.DeclaringType == _baseType)
+                                baseFields.Add(fieldInfo);
+                            else
+                                childFields.Add(fieldInfo);
+
+                            break;
+                        }
+                        else
+                            t = t.BaseType;
+                    }
+
+
+
+                } while (propertyIterator.NextVisible(false));
+            }
+
+            _mainExcludedProperties = new string[childFields.Count + 1];
+            _additionalExcludedProperties = new string[baseFields.Count + 1];
 
             int i = 0;
-            foreach (FieldInfo f in baseFields)
+            foreach (FieldInfo f in childFields)
             {
-                _excludedProperties[i] = f.Name;
+                _mainExcludedProperties[i] = f.Name;
                 i++;
             }
-            _excludedProperties[i] = "m_Script";
+            _mainExcludedProperties[i] = "m_Script";
 
-            if (fields.Length > baseFieldsCount)
+            i = 0;
+            foreach (FieldInfo f in baseFields)
+            {
+                _additionalExcludedProperties[i] = f.Name;
+                i++;
+            }
+            _additionalExcludedProperties[i] = "m_Script";
+
+
+            if (childFields.Count > 0)
             {
                 _showDerivedInspector = true;
             }
