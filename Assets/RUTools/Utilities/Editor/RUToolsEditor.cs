@@ -139,10 +139,9 @@ namespace RUT.Editor
                 }
 
                 EditorGUI.indentLevel -= 1;
-
-
-                EditorGUILayout.EndVertical();
             }
+
+            EditorGUILayout.EndVertical();
 
             ShowSeparator(1, _separatorStyle);
 
