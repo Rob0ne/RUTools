@@ -38,7 +38,9 @@ namespace RUT.Editor
         private static readonly String _idMainSettingsExpanded = "MainSettingsExpanded";
         private static readonly String _idDerivedSettingsExpanded = "DerivedSettingsExpanded";
 
+        protected bool _showMainInspector = false;
         protected bool _showDerivedInspector = false;
+
         protected string[] _additionalExcludedProperties;
         protected string[] _mainExcludedProperties;
 
@@ -122,22 +124,25 @@ namespace RUT.Editor
             //Logo.
             ShowLogo();
 
-            Rect mainTitleBox = EditorGUILayout.BeginVertical();
-            ShowFullInspectorBox(mainTitleBox, _titleBackgroundStyle);
-            _mainSettingsExpanded = EditorGUILayout.Foldout(_mainSettingsExpanded, "Main", true);
-            EditorGUILayout.EndVertical();
-
-            EditorGUI.indentLevel += 1;
-
-            if (_mainSettingsExpanded)
+            if (_showMainInspector)
             {
-                DrawMainSettings();
+                Rect mainTitleBox = EditorGUILayout.BeginVertical();
+                ShowFullInspectorBox(mainTitleBox, _titleBackgroundStyle);
+                _mainSettingsExpanded = EditorGUILayout.Foldout(_mainSettingsExpanded, "Main", true);
+                EditorGUILayout.EndVertical();
+
+                EditorGUI.indentLevel += 1;
+
+                if (_mainSettingsExpanded)
+                {
+                    DrawMainSettings();
+                }
+
+                EditorGUI.indentLevel -= 1;
+
+
+                EditorGUILayout.EndVertical();
             }
-
-            EditorGUI.indentLevel -= 1;
-
-
-            EditorGUILayout.EndVertical();
 
             ShowSeparator(1, _separatorStyle);
 
@@ -367,6 +372,10 @@ namespace RUT.Editor
             }
             _additionalExcludedProperties[i] = "m_Script";
 
+            if(baseFields.Count > 0)
+            {
+                _showMainInspector = true;
+            }
 
             if (childFields.Count > 0)
             {
