@@ -6,7 +6,7 @@ namespace RUT.Editor
     /// <summary>
     /// RUToolsSkin class.
     /// </summary>
-    [CreateAssetMenu(fileName = "RUTSkin", menuName = "RUTools/Options/Skin", order = 2)]
+    //[CreateAssetMenu(fileName = "RUTSkin", menuName = "RUTools/Options/Skin", order = 2)]
     public class RUToolsSkin : ScriptableObject
     {
         #region Public properties

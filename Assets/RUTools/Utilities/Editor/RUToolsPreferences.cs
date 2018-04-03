@@ -12,7 +12,7 @@ namespace RUT.Editor
     /// <summary>
     /// RUToolsPreferences class.
     /// </summary>
-    [CreateAssetMenu(fileName = "RUTPreferences", menuName = "RUTools/Options/Preferences", order = 1)]
+    //[CreateAssetMenu(fileName = "RUTPreferences", menuName = "RUTools/Options/Preferences", order = 1)]
     public class RUToolsPreferences : ScriptableObject
     {
         #region Public properties
