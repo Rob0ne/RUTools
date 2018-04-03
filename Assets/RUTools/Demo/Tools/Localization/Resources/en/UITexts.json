@@ -1,0 +1,52 @@
+﻿{
+  "texts": [
+    {
+      "id": "text1",
+      "text": "Hat"
+    },
+    {
+      "id": "text2",
+      "text": "House"
+    },
+    {
+      "id": "text3",
+      "text": "Menu"
+    },
+    {
+      "id": "text4",
+      "text": "Red"
+    },
+    {
+      "id": "text5",
+      "text": "Left"
+    },
+    {
+      "id": "text6",
+      "text": "Empty"
+    },
+    {
+      "id": "text7",
+      "text": "Button"
+    },
+    {
+      "id": "text8",
+      "text": "Path"
+    },
+    {
+      "id": "text9",
+      "text": "Dog"
+    },
+    {
+      "id": "text10",
+      "text": "Car"
+    },
+    {
+      "id": "text11",
+      "text": "Entity"
+    },
+    {
+      "id": "text12",
+      "text": "Default"
+    }
+  ]
+}

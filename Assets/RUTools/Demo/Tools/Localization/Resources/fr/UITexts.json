@@ -1,0 +1,52 @@
+﻿{
+  "texts": [
+    {
+      "id": "text1",
+      "text": "Chapeau"
+    },
+    {
+      "id": "text2",
+      "text": "Maison"
+    },
+    {
+      "id": "text3",
+      "text": "Menu"
+    },
+    {
+      "id": "text4",
+      "text": "Rouge"
+    },
+    {
+      "id": "text5",
+      "text": "Gauche"
+    },
+    {
+      "id": "text6",
+      "text": "Vide"
+    },
+    {
+      "id": "text7",
+      "text": "Bouton"
+    },
+    {
+      "id": "text8",
+      "text": "Chemin"
+    },
+    {
+      "id": "text9",
+      "text": "Chien"
+    },
+    {
+      "id": "text10",
+      "text": "Voiture"
+    },
+    {
+      "id": "text11",
+      "text": "Entité"
+    },
+    {
+      "id": "text12",
+      "text": "Défaut"
+    }
+  ]
+}

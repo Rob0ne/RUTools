@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbeadacd43509a43ad81ba5b67f4ce6, type: 3}
+  m_Name: LocalizationControllerByStringID
+  m_EditorClassIdentifier: 
+  controller:
+    localizedResources:
+    - language: french
+      resources:
+      - directoryPath: fr/
+        type: 0
+      - directoryPath: fr/
+        type: 2
+    - language: english
+      resources:
+      - directoryPath: en/
+        type: 0
+      - directoryPath: en/
+        type: 2
+    defaultText: _INVALID_
+    defaultAudio: {fileID: 0}
+    defaultTexture: {fileID: 2800000, guid: fb037c7b29046d9498cdace8ee042a71, type: 3}
