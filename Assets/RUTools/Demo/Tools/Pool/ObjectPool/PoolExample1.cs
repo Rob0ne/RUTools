@@ -2,7 +2,7 @@
 using UnityEngine;
 using RUT.Tools.Pool;
 
-namespace RUT.Examples.Pool
+namespace RUT.Examples.Pool.Ex1
 {
     /// <summary>
     /// PoolExample1 class.
@@ -11,7 +11,7 @@ namespace RUT.Examples.Pool
     {
         #region Public properties
         public ObjectPool pool;
-        public MultiObjectPool multiPool;
+        public MultiObjectPoolByStringID multiPool;
         [Space(5)]
         public string multiPoolItem1ID = "cube2";
         public string multiPoolItem2ID = "cube3";
@@ -61,7 +61,7 @@ namespace RUT.Examples.Pool
         #endregion
 
         #region Private methods
-        private void SpawnFromPool(ObjectPool pool, Vector3 position)
+        private void SpawnFromPool(IObjectPool pool, Vector3 position)
         {
             //Take an item from the pool. The return item can be null if all pool's items are
             //already used and the configuration doesn't allow any expansion.
@@ -79,7 +79,7 @@ namespace RUT.Examples.Pool
             }
         }
 
-        private void SpawnFromMultiPool(MultiObjectPool multiPool, string id, Vector3 position)
+        private void SpawnFromMultiPool(IMultiObjectPool<string> multiPool, string id, Vector3 position)
         {
             IPoolable poolable = multiPool.Take(id);
             Component component = poolable as Component;
@@ -119,13 +119,13 @@ namespace RUT.Examples.Pool
             }
         }
 
-        private void DisposeAllFromPool(ObjectPool pool)
+        private void DisposeAllFromPool(IObjectPool pool)
         {
             pool.DisposeAll();
             _poolQueue.Clear();
         }
 
-        private void DisposeAllFromMultiPool(MultiObjectPool multiPool)
+        private void DisposeAllFromMultiPool(IMultiObjectPool<string> multiPool)
         {
             multiPool.DisposeAll();
             _multiPoolQueues.Clear();

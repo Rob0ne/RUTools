@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d5ace9c65fc20f4ba9de133feeb7f19, type: 3}
+  m_Name: Cube2Asset
+  m_EditorClassIdentifier: 
+  localID: 
+  objectID: {fileID: 11400000, guid: 336875d19e98f2042afbe0988e4df1a9, type: 2}
+  idType: 1
+  obj: {fileID: 1825975587774260, guid: e2ba386598404d44f9277932e7adca3d, type: 2}

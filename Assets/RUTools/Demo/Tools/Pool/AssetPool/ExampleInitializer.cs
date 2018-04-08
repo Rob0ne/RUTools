@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace RUT.Examples.Pool
+namespace RUT.Examples.Pool.Ex2
 {
     /// <summary>
     /// ExampleInitializer class.
