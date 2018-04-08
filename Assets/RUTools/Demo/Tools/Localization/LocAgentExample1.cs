@@ -26,6 +26,12 @@ namespace RUT.Examples.Localization
             _controller = ExampleInitializer.LocalizationController;
             _controller.OnLanguageChanged += ReloadContent;
         }
+
+        public virtual void OnDestroy()
+        {
+            //Don't forget to remove the event when this instance is destroyed.
+            _controller.OnLanguageChanged -= ReloadContent;
+        }
         #endregion
     }
 }

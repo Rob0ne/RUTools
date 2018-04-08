@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using RUT.Tools.Localization;
 
@@ -32,6 +33,21 @@ namespace RUT.Examples.Localization
             frenchButton.onClick.AddListener(() => { localizationController.SetLanguage("french"); });
             englishButton.onClick.AddListener(() => { localizationController.SetLanguage("english"); });
             invalidButton.onClick.AddListener(() => { localizationController.SetLanguage("EMPTY"); });
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+
+        }
+
+        private void OnDestroy()
+        {
+            //Don't forget to clear the scriptable object manually or use an instance instead.
+            localizationController.Clear();
         }
         #endregion
     }
