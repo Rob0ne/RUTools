@@ -3,9 +3,9 @@
     /// <summary>
     /// IIdentifiedAsset interface.
     /// </summary>
-    public interface IIdentifiedAsset<T, U> where T : class
+    public interface IIdentifiedAsset<T, U> where U : class
     {
-        U ID { get; }
-        T Asset { get; }
+        T ID { get; }
+        U Asset { get; }
     }
 }
