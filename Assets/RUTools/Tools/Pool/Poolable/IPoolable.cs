@@ -5,6 +5,6 @@
     /// </summary>
     public interface IPoolable : IDisposable
     {
-        void LinkToPool(ObjectPool pool);
+        void LinkToPool(IObjectPool pool);
     }
 }

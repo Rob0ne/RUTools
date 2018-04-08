@@ -8,10 +8,11 @@ namespace RUT.Tools.Pool
     /// Multi pool class. Used to handle multiple pools by id.
     /// </summary>
     [System.Serializable]
-    public class MultiObjectPool
+    public abstract class MultiObjectPool<T, U, V, W> where T : PoolByID<U, V, W> where W : IObjectPool
     {
         #region Public properties
-        [SerializeField] PoolByID[] pools;
+        [SerializeField]
+        protected T[] pools;
 
         public int TotalItems
         {
@@ -19,7 +20,7 @@ namespace RUT.Tools.Pool
             {
                 int count = 0;
                 for (int i = 0; i < pools.Length; ++i)
-                    count += pools[i].pool.TotalItems;
+                    count += pools[i].Pool.TotalItems;
                 return count;
             }
         }
@@ -30,7 +31,7 @@ namespace RUT.Tools.Pool
             {
                 int count = 0;
                 for (int i = 0; i < pools.Length; ++i)
-                    count += pools[i].pool.FreeItems;
+                    count += pools[i].Pool.FreeItems;
                 return count;
             }
         }
@@ -41,14 +42,14 @@ namespace RUT.Tools.Pool
             {
                 int count = 0;
                 for (int i = 0; i < pools.Length; ++i)
-                    count += pools[i].pool.UsedItems;
+                    count += pools[i].Pool.UsedItems;
                 return count;
             }
         }
         #endregion
 
         #region Private properties
-        private Dictionary<string, ObjectPool> _poolByIDSet = new Dictionary<string, ObjectPool>();
+        private Dictionary<V, IObjectPool> _poolByIDSet = new Dictionary<V, IObjectPool>();
         private bool _initialised = false;
         #endregion
 
@@ -61,16 +62,19 @@ namespace RUT.Tools.Pool
         /// </summary>
         public void Initialise()
         {
+            if (_initialised)
+                return;
+
             for (int i = 0; i < pools.Length; ++i)
             {
-                if (!pools[i].pool.IsInitialised)
+                if (!pools[i].Pool.IsInitialised)
                 {
-                    pools[i].pool.Initialise();
+                    pools[i].Pool.Initialise();
 
-                    if (!_poolByIDSet.ContainsKey(pools[i].id))
-                        _poolByIDSet.Add(pools[i].id, pools[i].pool);
+                    if (!_poolByIDSet.ContainsKey(pools[i].ID))
+                        _poolByIDSet.Add(pools[i].ID, pools[i].Pool);
                     else
-                        ULog.LogDebug("MultiObjectPool: duplicated id \"" + pools[i].id + "\" detected.", ULog.Type.Warning);
+                        ULog.LogDebug(GetType().Name + ": duplicated id \"" + pools[i].ID + "\" detected.", ULog.Type.Warning);
                 }
             }
 
@@ -86,7 +90,11 @@ namespace RUT.Tools.Pool
                 return;
 
             for (int i = 0; i < pools.Length; ++i)
-                pools[i].pool.Clear();
+                pools[i].Pool.Clear();
+
+            _poolByIDSet.Clear();
+
+            _initialised = false;
         }
 
         /// <summary>
@@ -98,25 +106,25 @@ namespace RUT.Tools.Pool
                 return;
 
             for (int i = 0; i < pools.Length; ++i)
-                pools[i].pool.DisposeAll();
+                pools[i].Pool.DisposeAll();
         }
 
         /// <summary>
         /// Takes the first free object from the right pool. If none are available, new ones will
         /// be instantiated.
         /// </summary>
-        public IPoolable Take(string id)
+        public IPoolable Take(V id)
         {
             if (!_initialised)
                 return null;
 
             IPoolable instance = null;
-            ObjectPool pool;
+            IObjectPool pool;
 
             if (_poolByIDSet.TryGetValue(id, out pool))
                 instance = pool.Take();
             else
-                ULog.LogDebug("MultiObjectPool: no pool associated to id \"" + id + "\" has been found.");
+                ULog.LogDebug(GetType().Name + ": no pool associated to id \"" + id + "\" has been found.");
 
             return instance;
         }
@@ -131,11 +139,11 @@ namespace RUT.Tools.Pool
 
             for (int i = 0; i < pools.Length; ++i)
             {
-                if(pools[i].pool.Recover(instance))
+                if(pools[i].Pool.Recover(instance))
                     return true;
             }
 
-            ULog.LogDebug("MultiObjectPool: " + instance.ToString() + " doesn't belong to any pool or is already recovered");
+            ULog.LogDebug(GetType().Name + ": " + instance.ToString() + " doesn't belong to any pool or is already recovered");
 
             return false;
         }
@@ -145,12 +153,14 @@ namespace RUT.Tools.Pool
         #endregion
 
         #region SubType
-        [System.Serializable]
-        public struct PoolByID
-        {
-            [ReadOnlyRuntime] public string id;
-            public ObjectPool pool;
-        }
+
         #endregion
+    }
+
+    [System.Serializable]
+    public abstract class PoolByID<T, U, V> where V : IObjectPool
+    {
+        public abstract U ID { get; }
+        public abstract V Pool { get; }
     }
 }

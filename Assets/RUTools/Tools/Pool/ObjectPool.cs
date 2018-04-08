@@ -11,21 +11,84 @@ namespace RUT.Tools.Pool
     /// they are not used anymore.
     /// </summary>
     [System.Serializable]
-    public class ObjectPool
+    public class ObjectPool : ObjectPool<Object>
     {
         #region Public properties
-        public Transform parent;
         [Space(5)]
         [SerializeField, RequireInterface(typeof(IPoolable))]
         protected Object item;
         public int start;
         public int add;
 
+        public override IPoolable Item
+        { get { return item as IPoolable; }}
+        #endregion
+
+        #region API
+        public override void Initialise()
+        {
+            if (item == null)
+            {
+                ULog.LogDebug(GetType().Name + ": pool initialisation impossible, item is null.", ULog.Type.Warning);
+                return;
+            }
+            if (item as IPoolable == null)
+            {
+                ULog.LogDebug(GetType().Name + ": pool initialisation impossible, item is not poolable.", ULog.Type.Warning);
+                return;
+            }
+
+            base.Initialise();
+        }
+        #endregion
+
+        #region Private methods
+        protected override bool ExtendList(bool initialisation = false)
+        {
+            int count = initialisation ? start : add;
+
+            if (count <= 0)
+            {
+                if (!initialisation)
+                    ULog.LogDebug(GetType().Name + ": pool extension impossible, tried to add " + count + " items.", ULog.Type.Warning);
+                return false;
+            }
+
+            for (int i = 0; i < count; ++i)
+            {
+                IPoolable newInstance = Object.Instantiate<Object>(item) as IPoolable;
+
+                newInstance.LinkToPool(this);
+
+                Component component = newInstance as Component;
+
+                if (component != null)
+                {
+                    component.transform.SetParent(parent);
+                    component.gameObject.SetActive(false);
+                }
+
+                _freeStack.Push(newInstance);
+            }
+
+            if (!initialisation)
+                ULog.LogDebug(GetType().Name + ": pool extented by " + count + " \"" + item.name + "\" items.", ULog.Type.Log);
+
+            return true;
+        }
+        #endregion
+    }
+
+    [System.Serializable]
+    public abstract class ObjectPool<T> : IObjectPool where T : class
+    {
+        #region Public properties
+        public Transform parent;
+
         public bool IsInitialised
         { get{return _initialised;} }
 
-        public IPoolable Item
-        { get { return item as IPoolable; } set { item = value as Object; } }
+        public abstract IPoolable Item { get; }
 
         public int TotalItems
         { get { return _freeStack.Count + _usedSet.Count; } }
@@ -38,29 +101,20 @@ namespace RUT.Tools.Pool
         #endregion
 
         #region Private properties
-        protected Stack<IPoolable> _freeStack;
-        protected HashSet<IPoolable> _usedSet;
-        protected bool _initialised;
-        #endregion
-
-        #region Constructor
-        public ObjectPool()
-        {
-            _freeStack = new Stack<IPoolable>();
-            _usedSet = new HashSet<IPoolable>();
-            _initialised = false;
-        }
+        protected Stack<IPoolable> _freeStack = new Stack<IPoolable>();
+        protected HashSet<IPoolable> _usedSet = new HashSet<IPoolable>();
+        protected bool _initialised = false;
         #endregion
 
         #region API
         /// <summary>
         /// Initialises pool's list.
         /// </summary>
-        public void Initialise()
+        public virtual void Initialise()
         {
             if (_initialised)
             {
-                ULog.LogDebug("ObjectPool: pool has already been initialized.", ULog.Type.Log);
+                ULog.LogDebug(GetType().Name+": pool has already been initialized.", ULog.Type.Log);
                 return;
             }
 
@@ -105,6 +159,8 @@ namespace RUT.Tools.Pool
 
             _usedSet.Clear();
             _freeStack.Clear();
+
+            _initialised = false;
         }
 
         /// <summary>
@@ -128,7 +184,7 @@ namespace RUT.Tools.Pool
         {
             if (!_initialised)
             {
-                ULog.LogDebug("Pool: pool must be initialised.", ULog.Type.Warning);
+                ULog.LogDebug(GetType().Name + ": pool must be initialised.", ULog.Type.Warning);
                 return null;
             }
 
@@ -202,44 +258,7 @@ namespace RUT.Tools.Pool
         #endregion
 
         #region Private methods
-        protected bool ExtendList(bool initialisation = false)
-        {
-            int count = initialisation ? start : add;
-
-            if (count <= 0)
-            {
-                if (!initialisation)
-                    ULog.LogDebug("ObjectPool: pool extension impossible, tried to add " + count + " items.", ULog.Type.Warning);
-                return false;
-            }
-            if (item == null)
-            {
-                ULog.LogDebug("ObjectPool: pool extension impossible, item is null.", ULog.Type.Warning);
-                return false;
-            }
-
-            for (int i = 0; i < count; ++i)
-            {
-                IPoolable newInstance = Object.Instantiate<Object>(item) as IPoolable;
-
-                newInstance.LinkToPool(this);
-
-                Component component = newInstance as Component;
-
-                if (component != null)
-                {
-                    component.transform.SetParent(parent);
-                    component.gameObject.SetActive(false);
-                }
-
-                _freeStack.Push(newInstance);
-            }
-
-            if(!initialisation)
-                ULog.LogDebug("ObjectPool: pool extented by " + count + " \"" + item.ToString() + "\" items.", ULog.Type.Log);
-
-            return true;
-        }
+        protected abstract bool ExtendList(bool initialisation = false);
         #endregion
 
         #region SubType

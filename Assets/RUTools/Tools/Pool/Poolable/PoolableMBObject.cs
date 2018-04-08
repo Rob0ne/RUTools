@@ -9,7 +9,7 @@ namespace RUT.Tools.Pool
     public abstract class PoolableMBObject : MonoBehaviour, IPoolable
 {
         #region Private properties
-        private ObjectPool _linkedPool;
+        private IObjectPool _linkedPool;
         #endregion
 
         #region API
@@ -43,7 +43,7 @@ namespace RUT.Tools.Pool
         /// <summary>
         /// Links object to a pool.
         /// </summary>
-        public void LinkToPool(ObjectPool pool)
+        public void LinkToPool(IObjectPool pool)
         {
             if (_linkedPool == null)
                 _linkedPool = pool;
