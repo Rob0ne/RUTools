@@ -24,6 +24,11 @@ namespace RUT.Tools.Localization
             return controller.SetLanguage(language);
         }
 
+        public void Clear()
+        {
+            controller.Clear();
+        }
+
         public string GetText(string id)
         {
             return controller.GetText(id);

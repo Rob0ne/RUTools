@@ -57,6 +57,16 @@ namespace RUT.Tools.Localization
         }
 
         /// <summary>
+        /// Clears all the data.
+        /// </summary>
+        public void Clear()
+        {
+            _textSet.Clear();
+            _audioSet.Clear();
+            _textureSet.Clear();
+        }
+
+        /// <summary>
         /// Retrieves text associated to "id".
         /// </summary>
         public string GetText(string id)

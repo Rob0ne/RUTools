@@ -12,6 +12,7 @@ namespace RUT.Tools.Localization
         event LocalizationCallback OnLanguageChanged;
 
         bool SetLanguage(T language);
+        void Clear();
 
         string GetText(T id);
         AudioClip GetAudio(T id);
